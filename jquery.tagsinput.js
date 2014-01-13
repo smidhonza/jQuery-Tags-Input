@@ -96,16 +96,15 @@
 				}
 				
 				if (value !='' && skipTag != true) { 
-                    $('<span>').addClass('tag').append(
-                        $('<span>').text(value).append('&nbsp;&nbsp;'),
-                        $('<a>', {
-                            href  : '#',
-                            title : 'Removing tag',
-                            text  : 'x'
-                        }).click(function () {
-                            return $('#' + id).removeTag(escape(value));
-                        })
-                    ).insertBefore('#' + id + '_addTag');
+					$('<span class="tag"><span>' + value + '</span>' +
+						'<a href="#" title="Remove tag" onclick="return $(\'#' + id + '\').removeTag(\'' + escape(value) + '\'); ">x</a></span>')
+						.insertBefore('#' + id + '_addTag');
+
+					$('#' + id + '_tagsinput').sortable({
+						update: function () {
+							$.fn.sortTag("#" + id, "#" + id + "_tagsinput span span");
+						}
+					});
 
 					tagslist.push(value);
 				
@@ -134,6 +133,14 @@
 			
 			return false;
 		};
+	
+	$.fn.sortTag = function (input, span) {
+		var array = [];
+		$(span).each(function () {
+			array.push($(this).text());
+		});
+		$(input).val(array.join());
+	};
 		
 	$.fn.removeTag = function(value) { 
 			value = unescape(value);
